@@ -22,11 +22,13 @@
 
 # define DEG_TO_RAD 0.01745329251
 # define RAD_TO_DEG 57.2957795131
-
+	
 typedef struct s_buffer {
 	uint32_t		*pixels;
-	uint32_t		w;
-	uint32_t		h;
+//	uint8_t		*pixels;
+	int			w;
+	int			h;
+	int			pitch;
 }					t_buffer;
 
 typedef struct s_rend
@@ -36,7 +38,7 @@ typedef struct s_rend
 	SDL_Texture		*win_tex;
 	void			*win_pixels;
 	t_buffer		*win_buffer;
-	int				win_pixel_pitch;
+	int				win_pixel_pitch; // can this be deleted?
 	bool			run;
 }					t_rend;
 
