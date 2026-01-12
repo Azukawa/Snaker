@@ -6,11 +6,11 @@
 /*   By: eniini <eniini@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:53:41 by eniini            #+#    #+#             */
-/*   Updated: 2021/08/10 15:06:50 by eniini           ###   ########.fr       */
+/*   Updated: 2026/01/12 22:52:10 by alero            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "racer.h"
+#include "snaker.h"
 
 /*
 *	Colors the pixel in given coordinates of the given buffer as the given

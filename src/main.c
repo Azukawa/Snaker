@@ -1,5 +1,22 @@
 #include "snaker.h"
 
+void	ft_getout(const char *s)
+{
+	size_t	i;
+	char	*c;
+
+	if (s != NULL)
+	{
+		c = "\n";
+		i = 0;
+		while (s[i] != '\0')
+			i++;
+		write(2, s, i);
+		write(2, c, 1);
+	}
+	exit(EXIT_FAILURE);
+}
+
 static void	init(t_rend *renderer, t_snake *snake)
 {
 	bzero(snake, sizeof(t_snake));
@@ -10,7 +27,8 @@ static void	init(t_rend *renderer, t_snake *snake)
 		ft_getout("failed to initialize main buffer");
 	renderer->win_buffer->w = WIN_W;
 	renderer->win_buffer->h = WIN_H;
-	renderer->win_buffer->pixels = (uint32_t *)memalloc(WIN_H * WIN_W);
+	renderer->win_buffer->pixels = (uint32_t *)malloc(WIN_H * WIN_W);
+	bzero(renderer->win_buffer->pixels, sizeof(renderer->win_buffer->pixels) * WIN_H * WIN_W);
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		ft_getout(SDL_GetError());
 	renderer->win = SDL_CreateWindow(WIN_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIN_W, WIN_H, 0);
@@ -442,7 +460,7 @@ int	main(void)
 	SDL_Event	e;
 	t_snake		snake;
 
-	init(&rend);
+	init(&rend, &snake);
 	while (rend.run)
 		loop(&rend, &e, &snake);
 	cleanup(&rend);

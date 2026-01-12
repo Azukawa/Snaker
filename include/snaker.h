@@ -8,6 +8,7 @@
 # include <string.h> //for sterror
 # include <errno.h> //for errno macro
 # include <math.h>
+# include <stdbool.h>
 
 # include "../libSDL2/include/SDL2/SDL_mixer.h"
 # include "../libSDL2/include/SDL2/SDL.h"

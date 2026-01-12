@@ -6,12 +6,97 @@
 /*   By: eniini <eniini@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 15:01:46 by eniini            #+#    #+#             */
-/*   Updated: 2025/02/16 21:58:54 by alero            ###   ########.fr       */
+/*   Updated: 2026/01/12 23:11:20 by alero            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "racer.h"
+#include "snaker.h"
 
+void	ft_swap(void *a, void *b, size_t size)
+{
+	char	*temp;
+
+	temp = malloc(size);
+	if (temp)
+	{
+		memcpy(temp, a, size);
+		memcpy(a, b, size);
+		memcpy(b, temp, size);
+		free(temp);
+	}
+}
+
+static void	init_errors(t_point p0, t_point p1, int *derror, int *error)
+{
+	uint32_t	ydiff;
+
+	if (p1.y > p0.y)
+		ydiff = p1.y - p0.y;
+	else
+		ydiff = p0.y - p1.y;
+	*derror = ydiff * 2;
+	*error = 0;
+}
+
+static bool	init_points(t_point *p0, t_point *p1)
+{
+	bool		flip;
+	uint32_t	xdiff;
+	uint32_t	ydiff;
+
+	flip = FALSE;
+	if (p0->x > p1->x)
+		xdiff = p0->x - p1->x;
+	else
+		xdiff = p1->x - p0->x;
+	if (p0->y > p1->y)
+		ydiff = p0->y - p1->y;
+	else
+		ydiff = p1->y - p0->y;
+	if (xdiff < ydiff)
+	{
+		ft_swap(&p0->x, &p0->y, sizeof(int));
+		ft_swap(&p1->x, &p1->y, sizeof(int));
+		flip = TRUE;
+	}
+	if (p0->x > p1->x)
+	{
+		ft_swap(&p0->x, &p1->x, sizeof(int));
+		ft_swap(&p0->y, &p1->y, sizeof(int));
+	}
+	return (flip);
+}
+
+/*
+*	Bresenham's line algorithm.
+*/
+void	draw_line(t_buffer *buf, t_point p0, t_point p1, uint32_t color)
+{
+	int		derror;
+	int		error;
+	t_point	crawler;
+	bool	flip;
+
+	flip = init_points(&p0, &p1);
+	crawler = (t_point){p0.x, p0.y};
+	init_errors(p0, p1, &derror, &error);
+	while (crawler.x <= p1.x)
+	{
+		if (!flip)
+			draw_pixel(crawler.x++, crawler.y, buf, color);
+		else
+			draw_pixel(crawler.y, crawler.x++, buf, color);
+		error += derror;
+		if (error > (int)p1.x - (int)p0.x)
+		{
+			if (p1.y > p0.y)
+				crawler.y += 1;
+			else
+				crawler.y += -1;
+			error -= ((int)p1.x - (int)p0.x) * 2;
+		}
+	}
+}
 /*
 *	Calculates points on the border of the circle in its first octant,
 *	rest are determined by symmetry. draw unique points until (x = y)
