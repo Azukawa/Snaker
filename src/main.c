@@ -27,8 +27,8 @@ static void	init(t_rend *renderer, t_snake *snake)
 		ft_getout("failed to initialize main buffer");
 	renderer->win_buffer->w = WIN_W;
 	renderer->win_buffer->h = WIN_H;
-	renderer->win_buffer->pixels = (uint32_t *)malloc(WIN_H * WIN_W);
-	bzero(renderer->win_buffer->pixels, sizeof(renderer->win_buffer->pixels) * WIN_H * WIN_W);
+	renderer->win_buffer->pixels = (uint32_t *)malloc(sizeof(void *) * WIN_H * WIN_W);
+	bzero(renderer->win_buffer->pixels, sizeof(uint32_t *) * WIN_H * WIN_W);
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		ft_getout(SDL_GetError());
 	renderer->win = SDL_CreateWindow(WIN_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIN_W, WIN_H, 0);
