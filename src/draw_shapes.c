@@ -6,7 +6,7 @@
 /*   By: eniini <eniini@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 15:01:46 by eniini            #+#    #+#             */
-/*   Updated: 2026/01/12 23:11:20 by alero            ###   ########.fr       */
+/*   Updated: 2026/01/13 00:56:11 by alero            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,37 @@ void	draw_circle(t_buffer *buf, t_point p, int r, uint32_t color)
 		}
 	}
 }
+
+void	draw_circle_16(t_buffer *buf, t_point p, int r, uint16_t color)
+{
+	int	x;
+	int	y;
+	int	d;
+
+	x = r;
+	y = 0;
+	d = 1 - r;
+	while (x >= y)
+	{
+		draw_pixel_16(p.x + x, p.y + y, buf, color);
+		draw_pixel_16(p.x - x, p.y + y, buf, color);
+		draw_pixel_16(p.x + x, p.y - y, buf, color);
+		draw_pixel_16(p.x - x, p.y - y, buf, color);
+		draw_pixel_16(p.x + y, p.y + x, buf, color);
+		draw_pixel_16(p.x - y, p.y + x, buf, color);
+		draw_pixel_16(p.x + y, p.y - x, buf, color);
+		draw_pixel_16(p.x - y, p.y - x, buf, color);
+		if (d < 0)
+			d += (2 * ++y) + 1;
+		else
+		{
+			x--;
+			d += (2 * (++y - x)) + 1;
+		}
+	}
+}
+
+
 
 /*
 *	Instead of drawing individual pixels on symmetrical positions along the

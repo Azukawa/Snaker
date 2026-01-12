@@ -24,8 +24,8 @@
 # define RAD_TO_DEG 57.2957795131
 	
 typedef struct s_buffer {
-	uint32_t		*pixels;
-//	uint8_t		*pixels;
+//	uint32_t		*pixels;
+	uint16_t		*pixels;
 	int			w;
 	int			h;
 	int			pitch;
@@ -84,8 +84,10 @@ typedef struct	s_snake{
 }				t_snake;
 
 void		draw_pixel(uint32_t x, uint32_t y, t_buffer *buf, uint32_t color);
+void		draw_pixel_16(uint32_t x, uint32_t y, t_buffer *buf, uint16_t color);
 void		draw_line(t_buffer *buf, t_point p0, t_point p1, uint32_t color);
 void		draw_circle(t_buffer *buf, t_point p, int r, uint32_t color);
+void		draw_circle_16(t_buffer *buf, t_point p, int r, uint16_t color);
 void		draw_filled_circle(t_buffer *buf, t_point p, int r, uint32_t color);
 void		draw_square(t_point a, t_point b, t_buffer *buf, int color);
 

@@ -27,11 +27,12 @@ static void	init(t_rend *renderer, t_snake *snake)
 		ft_getout("failed to initialize main buffer");
 	renderer->win_buffer->w = WIN_W;
 	renderer->win_buffer->h = WIN_H;
-	renderer->win_buffer->pixels = (uint32_t *)malloc(sizeof(uint32_t) * WIN_H * WIN_W);
+	renderer->win_buffer->pitch = WIN_W * 2;
+	renderer->win_buffer->pixels = (uint16_t *)malloc(sizeof(uint16_t) * WIN_H * WIN_W);
 	if (!renderer->win_buffer->pixels)
 		ft_getout("Failed to allocate pixel buffer");
 	renderer->win_buffer->pitch = WIN_W;
-	bzero(renderer->win_buffer->pixels, sizeof(uint32_t) * WIN_H * WIN_W);
+	bzero(renderer->win_buffer->pixels, sizeof(uint16_t) * WIN_H * WIN_W);
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		ft_getout(SDL_GetError());
 	renderer->win = SDL_CreateWindow(WIN_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIN_W, WIN_H, 0);
@@ -40,12 +41,12 @@ static void	init(t_rend *renderer, t_snake *snake)
 	renderer->rend = SDL_CreateRenderer(renderer->win, -1, SDL_RENDERER_ACCELERATED);
 	if (!renderer->rend)
 		ft_getout(SDL_GetError());
-	renderer->win_tex = SDL_CreateTexture(renderer->rend, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WIN_W, WIN_H);
+	renderer->win_tex = SDL_CreateTexture(renderer->rend, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, WIN_W, WIN_H);
 	if (!renderer->win_tex)
 		ft_getout(SDL_GetError());
 	renderer->run = TRUE;
-	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048 ) != 0)
-		ft_getout(SDL_GetError());
+//	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048 ) != 0)
+//		ft_getout(SDL_GetError());
 	printf("Init success.\n");
 }
 
@@ -89,7 +90,7 @@ void backend_checker(t_rend *rend)
 
 void draw_2_window(t_rend *rend)
 {
-    if (SDL_UpdateTexture(rend->win_tex, NULL, rend->win_buffer->pixels, WIN_W * 4) < 0)
+    if (SDL_UpdateTexture(rend->win_tex, NULL, rend->win_buffer->pixels, rend->win_buffer->pitch) < 0)
 		ft_getout(SDL_GetError());
 
     SDL_RenderCopy(rend->rend, rend->win_tex, NULL, NULL);
@@ -362,6 +363,13 @@ t_point	perspective(t_v3 pos)
 	return (ret);
 }
 
+static inline uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b)
+{
+	return	((r >> 3) << 11) |
+			((g >> 2) << 5)  |
+			(b >> 3);
+}
+
 int		color_brightness(int color, int brightness)
 {
 	if(brightness > 255)
@@ -398,7 +406,8 @@ void	draw_snake(t_rend *rend, t_v3 pos)
 		if(index % 15 == 0)
 		{
 			t_point pos_on_screen = perspective(snake_body[index]);	
-			draw_circle(rend->win_buffer, pos_on_screen, (body_size - (size_increment * index))/ snake_body[index].z, color_brightness(col, 255 - snake_body[index].z * 28));
+		//	draw_circle(rend->win_buffer, pos_on_screen, (body_size - (size_increment * index))/ snake_body[index].z, color_brightness(col, 255 - snake_body[index].z * 28));
+//			draw_circle_16(rend->win_buffer, pos_on_screen, (body_size - (size_increment * index))/ snake_body[index].z, 0xFFFF);
 		}
 //		col += 145;
 		index--;
@@ -446,13 +455,24 @@ void three_d_rend(t_rend *rend, t_snake *snake)
 	speed = SDL_GetTicks() * 0.01;
 }
 
+void	render_type(t_rend *renderer)
+{
+	Uint32 format;
+	int access, w, h;
+
+	SDL_QueryTexture(renderer->win_tex, &format, &access, &w, &h);
+
+	printf("Texture format: %s\n", SDL_GetPixelFormatName(format));
+}
+
 static void	loop(t_rend *rend, SDL_Event *e, t_snake *snake)
 {
-	bzero(rend->win_buffer->pixels, WIN_H * WIN_W * sizeof(uint32_t));
+	bzero(rend->win_buffer->pixels, WIN_H * WIN_W * sizeof(uint16_t));
 	keyevent(e, rend, snake);
-	three_d_rend(rend, snake);
+//	three_d_rend(rend, snake);
 	draw_2_window(rend);
 	fps_counter();
+//	render_type(rend);
 }
 
 

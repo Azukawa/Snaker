@@ -6,7 +6,7 @@
 /*   By: eniini <eniini@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/10 14:53:41 by eniini            #+#    #+#             */
-/*   Updated: 2026/01/12 22:52:10 by alero            ###   ########.fr       */
+/*   Updated: 2026/01/13 01:12:34 by alero            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,14 @@ void	draw_pixel(uint32_t x, uint32_t y, t_buffer *buf, uint32_t color)
 
 	i = (buf->w * y) + x;
 	if (x < buf->w && y < buf->h)
+		buf->pixels[i] = color;
+}
+
+void	draw_pixel_16(uint32_t x, uint32_t y, t_buffer *buf, uint16_t color)
+{
+	uint32_t	i;
+
+	i = ((buf->w * buf->pitch) * y) + x;
+	if (x < (buf->w)&& y < buf->h)
 		buf->pixels[i] = color;
 }
